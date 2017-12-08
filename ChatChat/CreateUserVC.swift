@@ -13,6 +13,7 @@ class CreateUserVC: UIViewController {
 
     var usernameTemp: String?
     
+    @IBOutlet weak var DoNotHaveAccountLabel: UILabel!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
@@ -27,12 +28,12 @@ class CreateUserVC: UIViewController {
     // MARK: View life cycle-----------------------------View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Viewdidload")
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
     }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -52,16 +53,32 @@ class CreateUserVC: UIViewController {
             positionTextField.text != "" {
             self.performSegue(withIdentifier: "CreateUser", sender: nil)
         }
+        else {
+            self.DoNotHaveAccountLabel.text = "Fill in the text fields!"
+            self.DoNotHaveAccountLabel.alpha = 1.0
+        }
         
-        //NOTE: need to add if they have an account- we will pull user info from DB
-        // should match username and email with the key to retrieve the actual user
+        
     }
     
     @IBAction func ExistingAccoount(_ sender: Any) {
-        self.performSegue(withIdentifier: "ExistingAccount", sender: nil)
         
-        //NOTE: need to add if they have an account- we will pull user info from DB
-        // should match username and email with the key to retrieve the actual user
+        DBusersRef.observeSingleEvent(of: .value, with: { snapshot in
+            
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                let userKey = child.key
+                
+                if let curUserId = Auth.auth().currentUser?.uid {
+                    if curUserId == userKey && snapshot.childrenCount != 0 {
+                        print("Found existing account")
+                        self.performSegue(withIdentifier: "ExistingAccount", sender: nil)
+                    }
+                }
+            }
+            // if doesn't perform segue, no account exists or matches
+            self.DoNotHaveAccountLabel.text = "You do not have and existing account!"
+            self.DoNotHaveAccountLabel.alpha = 1.0
+        })
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -83,7 +100,6 @@ class CreateUserVC: UIViewController {
                 let email = authUser.email
                 let photoURL = authUser.photoURL!
                 newUser = User(userId: userId, username: username!, firstName: firstName!, lastName: lastName!, sport: sport!, position: postion!, email: email!, photoURL: photoURL)
-                print("Loaded firebase user data correctly")
                 
                 // Put user into the database
                 let DBnewUserIdRef: DatabaseReference = DBusersRef.child(userId) // existing users
@@ -105,13 +121,17 @@ class CreateUserVC: UIViewController {
                 print("Could not load firebase user data")
             }
             
-            let navVc = segue.destination as! UINavigationController // 1
-            let HomeScreenVC = navVc.viewControllers.first as! HomeScreenVC
-            HomeScreenVC.username = usernameTemp
-            HomeScreenVC.user = newUser
-        }        
+            let slideOutPrepVC = segue.destination as! slideOutPrepPageVC
+            slideOutPrepVC.username = usernameTemp
+            slideOutPrepVC.user = newUser
+        }
+        
+        else if segue.identifier == "SkipSegue" {
+            
+        }
+        
     }
-
+    
     
     
     

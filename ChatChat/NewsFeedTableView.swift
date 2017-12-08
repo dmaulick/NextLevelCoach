@@ -11,24 +11,32 @@ import Firebase
 
 class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    var currentTeamForAPP: Team?
+    
     private lazy var EventRef: DatabaseReference = Database.database().reference().child("Events")
     private var EventRefHandle: DatabaseHandle?
     
     private lazy var GroupEventKeysRef: DatabaseReference = Database.database().reference().child("GroupEventKeys")
+    private lazy var userGroupKeysRef: DatabaseReference = Database.database().reference().child("userGroupKeys")
+    private lazy var channelsInTeamsRef: DatabaseReference = Database.database().reference().child("channelsInTeams")
+    
+    var groupKeysOfCurrentTeam: [String] = [String]()
+    var groupNamesOfCurrentTeam: [String] = [String]()
     
     private var events: [Event] = []
+    
+    var GroupKeysOfCurrentUser: [String] = [String]()
+    var GroupNamesOfCurrentUser: [String] = [String]()
+    
+    var eventKeys: [String] = [String]()
     
     var user: User?
     
     @IBOutlet weak var NewsFeedTableView: UITableView!
     
     
-    var userGroupKeys: [String] = [String]()
-    var userGroupNames: [String] = [String]()
     
-    var eventKeys: [String] = [String]()
     
-    private lazy var userGroupKeysRef: DatabaseReference = Database.database().reference().child("userGroupKeys")
     
     
     
@@ -39,11 +47,12 @@ class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataS
         //dateFormatter.dateStyle = .medium
         //dateFormatter.timeStyle = .medium
         
+        
         //self.navigationItem.leftBarButtonItem = self.editButtonItem
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
         self.navigationItem.rightBarButtonItem = addButton
         
-        updateUserGroupKeys()
+        updateGroupKeysOfCurrentUserByCurrentTeam()
         
         
     }
@@ -61,9 +70,30 @@ class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataS
     
     
     
-   
+    func updateGroupKeysOfCurrentUserByCurrentTeam() {
+        channelsInTeamsRef.observeSingleEvent(of: .value, with: { snapshot in
+            print(snapshot.childrenCount) // I got the expected number of items
+            
+            let teamId = self.currentTeamForAPP?.teamId
+            
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                let childDict = child.value as! [String: String]
+                
+                let curTeamID = childDict["TeamID"]
+                let curTeam = childDict["GroupName"]
+                let curChannelId = childDict["channelId"]
+                
+                if teamId == curTeamID {
+                    self.groupKeysOfCurrentTeam.append(curChannelId!)
+                    self.groupNamesOfCurrentTeam.append(curTeam!)
+                }
+            }
+            print(self.GroupKeysOfCurrentUser)
+            self.updateGroupKeysOfCurrentUser()
+        })
+    }
     
-    private func updateUserGroupKeys() {
+    private func updateGroupKeysOfCurrentUser() {
         userGroupKeysRef.observeSingleEvent(of: .value, with: { snapshot in
             print(snapshot.childrenCount) // I got the expected number of items
             
@@ -77,13 +107,13 @@ class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataS
                 let curChannelName = childDict["GroupName"]
                 
                 if actualUser.userId == curUserId {
-                    self.userGroupKeys.append(curChannelId!)
-                    self.userGroupNames.append(curChannelName!)
+                    self.GroupKeysOfCurrentUser.append(curChannelId!)
+                    self.GroupNamesOfCurrentUser.append(curChannelName!)
                 }
             }
             
             print("In update User's group  keys")
-            for val in self.userGroupNames {
+            for val in self.GroupNamesOfCurrentUser {
                 print(val)
             }
             self.updateEventKeys()
@@ -103,7 +133,7 @@ class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataS
                 let curChannelKey = childDict["ChannelKey"]
                 let curEventKey = childDict["EventKey"]
                 
-                if self.userGroupKeys.contains(curChannelKey!) {
+                if self.GroupKeysOfCurrentUser.contains(curChannelKey!) && self.groupKeysOfCurrentTeam.contains(curChannelKey!){
                     self.eventKeys.append(curEventKey!)
                 }
             }
@@ -139,10 +169,11 @@ class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataS
                     let whatToWear = EventData["whatToWear"] as? String,
                     let channelName = EventData["ChannelName"] as? String,
                     let channelKey = EventData["ChannelKey"] as? String,
+                    let date = EventData["Date"] as? String,
                     //let startTime = EventData["startTime"] as? String,
                     //let endTime = EventData["endTime"] as? String!,
                     title.count > 0 {
-                    self.events.append(Event(title: title, description: description, whatToWear: whatToWear, channelName: channelName, channelKey: channelKey)) //startTime: startTime, endTime: endTime))
+                    self.events.append(Event(title: title, description: description, whatToWear: whatToWear, channelName: channelName, channelKey: channelKey,  date: date)) //startTime: startTime, endTime: endTime))
                     self.NewsFeedTableView.reloadData()
                     print("loaded Event")
                 } else {
@@ -176,8 +207,22 @@ class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataS
     // MARK: - Table view ------------------------------------Table view----------------------------------------------Table view---------
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
+        
+        var numOfSections: Int = 0
+        if events.count > 0 {
+            numOfSections            = 1
+            tableView.backgroundView = nil
+        }
+        else {
+            let noDataLabel: UILabel     = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width / 2, height: tableView.bounds.size.height))
+            noDataLabel.text          = "No upcoming events"
+            noDataLabel.textColor     = UIColor.black
+            noDataLabel.textAlignment = .center
+            tableView.backgroundView  = noDataLabel
+            tableView.separatorStyle  = .none
+        }
+        return numOfSections
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -193,8 +238,13 @@ class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataS
         let thisEvent = events[indexPath.row]
         cell?.titleLabel?.text = thisEvent.title
         cell?.descriptLabel?.text = thisEvent.description
-        cell?.startTimeLabel?.text = thisEvent.whatToWear
-        cell?.endTimeLabel?.text = thisEvent.channelName
+        
+        let calendar = NSCalendar.current
+        let CellDateComponents = calendar.dateComponents([.hour, .minute], from: thisEvent.date)
+        let stringMinute = String(describing: CellDateComponents.minute!)
+        cell?.Time?.text = "\(String(describing: CellDateComponents.hour!)):\(CellDateComponents.minute! < 10 ? "0\(stringMinute)" : stringMinute )"
+    
+        cell?.Group?.text = thisEvent.channelName
         //cell?.backgroundColor = UIColor.gray
  
         return cell!
@@ -219,9 +269,13 @@ class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if self.isEditing {
-            performSegue(withIdentifier: "defaultProfileSegue", sender: nil)
-        }
+        
+        self.NewsFeedTableView.deselectRow(at: indexPath, animated: true)
+        
+        
+        let event = self.events[(indexPath as NSIndexPath).row]
+        self.performSegue(withIdentifier: "EventDetailFromNewsFeed", sender: event)
+        
     }
     
     
@@ -232,20 +286,38 @@ class NewsFeedTableView: UIViewController, UITableViewDelegate, UITableViewDataS
         // This allows for unwind in detail view
     }
     @IBAction func unwindFromAdd(unwindSegue: UIStoryboardSegue){
-        // This allows for unwind in detail view
+        groupKeysOfCurrentTeam.removeAll()
+        GroupKeysOfCurrentUser.removeAll()
+        events.removeAll()
+        updateGroupKeysOfCurrentUserByCurrentTeam()
+        self.NewsFeedTableView.reloadData()
     }
     @IBAction func unwindFromEdit(unwindSegue: UIStoryboardSegue){
         // This allows for unwind in detail view
     }
     
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
         
         
         if segue.identifier == "addNewsSegue" {
             let addVC = segue.destination as! AddNewsPickGroupVC
             addVC.user = self.user
-            addVC.userGroupNames = self.userGroupNames
-            addVC.userGroupKeys = self.userGroupKeys
+            addVC.GroupNamesOfCurrentUser = self.GroupNamesOfCurrentUser
+            addVC.GroupKeysOfCurrentUser = self.GroupKeysOfCurrentUser
+            
+            
+            addVC.groupKeysOfCurrentTeam = self.groupKeysOfCurrentTeam
+            addVC.groupNamesOfCurrentTeam = self.groupNamesOfCurrentTeam
+            addVC.currentTeamForAPP = self.currentTeamForAPP
+        }
+        
+        if let event = sender as? Event {
+            if segue.identifier == "EventDetailFromNewsFeed" {
+                let eventDetailVC = segue.destination as! EventViewVC
+                eventDetailVC.event = event
+            }
         }
         /*
         if segue.identifier == "defaultProfileSegue" {

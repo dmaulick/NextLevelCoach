@@ -9,36 +9,54 @@ import FirebaseAuth
 
 enum Section: Int {
     case createNewChannelSection = 0
-    case currentChannelsSection
+    case currentChannelsSection = 1
 }
 
 class ChannelListViewController: UITableViewController {
 
+    
+    
+    
+    var currentTeamForAPP: Team?
+    
     var username: String?
     var user: User?
     var newChannelTextField: UITextField?
-    var userGroupKeys: [String] = [String]()
+    
+    var groupKeysOfCurrentTeam: [String] = [String]()
+    var GroupKeysOfCurrentUser: [String] = [String]()
+    var groupNamesOfCurrentTeam: [String] = [String]()
     
     private var channels: [Channel] = []
+    
     private lazy var DBchannelRef: DatabaseReference = Database.database().reference().child("channels")
     private var DBchannelRefHandle: DatabaseHandle?
     private lazy var userGroupKeysRef: DatabaseReference = Database.database().reference().child("userGroupKeys")
+
+    private lazy var channelsInTeamsRef: DatabaseReference = Database.database().reference().child("channelsInTeams")
     
     
-    
+    @IBOutlet weak var ExistingTeamsOutlet: UIBarButtonItem!
     // MARK: View Lifecycle ------------------------------------View Lifecycle---------------------------------------------View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Chat"
         
-        updateUserGroupKeys()
+    
+        //let addButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(addTapped))
+        ExistingTeamsOutlet.title = "Other Groups"
+        //self.navigationItem.rightBarButtonItem = addButton
         
-        
-        
-      
+        updateGroupKeysOfCurrentUserByCurrentTeam()
         
     }
+    
+    
+    
+    @IBAction func ExistingTeamsButton(_ sender: Any) {
+        performSegue(withIdentifier: "findGroup", sender: nil)
+    }
+    
     
     deinit {
         if let refHandle = DBchannelRefHandle {
@@ -46,8 +64,31 @@ class ChannelListViewController: UITableViewController {
         }
     }
     
-    //This is the function that will update this view controllers userGroup keys rray so that it only shows groups that the user is a part of
-    func updateUserGroupKeys() {
+    func updateGroupKeysOfCurrentUserByCurrentTeam() {
+        channelsInTeamsRef.observeSingleEvent(of: .value, with: { snapshot in
+            print(snapshot.childrenCount) // I got the expected number of items
+            
+            let teamId = self.currentTeamForAPP?.teamId
+            
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                let childDict = child.value as! [String: String]
+                
+                let curTeamID = childDict["TeamID"]
+                let curChannelId = childDict["channelId"]
+                let curChannelName = childDict["GroupName"]
+                
+                if teamId == curTeamID {
+                    self.groupKeysOfCurrentTeam.append(curChannelId!)
+                    self.groupNamesOfCurrentTeam.append(curChannelName!)
+                }
+            }
+            print(self.GroupKeysOfCurrentUser)
+            self.updateGroupKeysOfCurrentUser()
+        })
+    }
+    
+    //This is the function that will update this view controllers GroupKeysOfCurrentUser array so that it only shows groups that the user is a part of
+    func updateGroupKeysOfCurrentUser() {
         userGroupKeysRef.observeSingleEvent(of: .value, with: { snapshot in
             print(snapshot.childrenCount) // I got the expected number of items
             
@@ -59,15 +100,17 @@ class ChannelListViewController: UITableViewController {
                 
                 let curUserId = childDict["userId"]
                 let curChannelId = childDict["channelId"]
+                
                 print("Cur Child:")
                 print(child.value ?? "Child.value was nil")
                 print(curUserId ?? "curUserId was nil")
                 print(curChannelId ?? "curChannelId was nil")
                 if actualUser.userId == curUserId {
-                    self.userGroupKeys.append(curChannelId!)
+                    self.GroupKeysOfCurrentUser.append(curChannelId!)
+                    
                 }
             }
-            print(self.userGroupKeys)
+            print(self.GroupKeysOfCurrentUser)
             self.observeChannels()
         })
     
@@ -83,11 +126,22 @@ class ChannelListViewController: UITableViewController {
         if newChannelTextField?.text != "" {
             if let name = newChannelTextField?.text {
                 
+                let newGroupInCurTeamRef = channelsInTeamsRef.childByAutoId()
+                let newChannelRef = DBchannelRef.childByAutoId()
+                let userNewGroupKey = userGroupKeysRef.childByAutoId()
+                
+                let groupsInTeamItem = [
+                    "GroupName"     : name,
+                    "channelId"     : newChannelRef.key,
+                    "TeamName"      : currentTeamForAPP?.teamName,
+                    "TeamID"        : currentTeamForAPP?.teamId
+                ]
+                
                 let channelItem = [
                     "GroupName"     : name
                 ]
-                let newChannelRef = DBchannelRef.childByAutoId()
-                newChannelRef.setValue(channelItem)
+                
+                
                 
                 
                 let actualUser = user!
@@ -100,14 +154,22 @@ class ChannelListViewController: UITableViewController {
                     
                 ]
                 
-                let userNewGroupKey = userGroupKeysRef.childByAutoId()
+                newGroupInCurTeamRef.setValue(groupsInTeamItem)
+                newChannelRef.setValue(channelItem)
                 userNewGroupKey.setValue(userGroupKeyItem)
                 
                 // to update the user group keys when this user creates a channel
-                self.userGroupKeys.append(newChannelRef.key)
+                self.GroupKeysOfCurrentUser.append(newChannelRef.key)
+                self.groupKeysOfCurrentTeam.append(newChannelRef.key)
+                
             }
             newChannelTextField?.text = ""
+            //self.observeChannels()
         }
+        
+        //groupKeysOfCurrentTeam.removeAll()
+        //GroupKeysOfCurrentUser.removeAll()
+        
     }
     
     private func observeChannels() {
@@ -116,7 +178,7 @@ class ChannelListViewController: UITableViewController {
             let channelData = snapshot.value as! Dictionary<String, AnyObject>
             let curGroupKey = snapshot.key
             
-            if self.userGroupKeys.contains(curGroupKey) {
+            if self.GroupKeysOfCurrentUser.contains(curGroupKey) && self.groupKeysOfCurrentTeam.contains(curGroupKey) {
                 if let name = channelData["GroupName"] as! String!, name.count > 0 {
                     // if user. groups contains name...?
                     self.channels.append(Channel(id: curGroupKey, name: name))
@@ -163,22 +225,49 @@ class ChannelListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == Section.currentChannelsSection.rawValue {
             let channel = channels[(indexPath as NSIndexPath).row]
             self.performSegue(withIdentifier: "ShowChannel", sender: channel)
         }
+        else {
+            print(" Do Nothing")
+        }
+    }
+    
+    @IBAction func unwindFromAdd(unwindSegue: UIStoryboardSegue){
+        groupKeysOfCurrentTeam.removeAll()
+        GroupKeysOfCurrentUser.removeAll()
+        
+        groupNamesOfCurrentTeam.removeAll()
+        
+        channels.removeAll()
+        updateGroupKeysOfCurrentUserByCurrentTeam()
+        self.tableView.reloadData()
     }
     
     // MARK: Navigation -------------------------------------Navigation-------------------------------------------------Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
-        if let channel = sender as? Channel {
-            let chatVc = segue.destination as! ChatViewController
-            let actualUser = user!
-            chatVc.senderDisplayName = actualUser.username
-            chatVc.channel = channel
-            chatVc.channelRef = DBchannelRef.child(channel.id)
+        
+        if segue.identifier == "findGroup" {
+            let addVC = segue.destination as! AddGroupVC
+            addVC.user = self.user
+            
+            addVC.groupKeysOfCurrentTeam = self.groupKeysOfCurrentTeam
+            addVC.groupNamesOfCurrentTeam = self.groupNamesOfCurrentTeam
+            addVC.currentTeamForAPP = self.currentTeamForAPP
+        }
+        
+        if segue.identifier == "ShowChannel" {
+            if let channel = sender as? Channel {
+                let chatVc = segue.destination as! ChatViewController
+                let actualUser = user!
+                chatVc.senderDisplayName = actualUser.username
+                chatVc.channel = channel
+                chatVc.channelRef = DBchannelRef.child(channel.id)
+            }
         }
     }
     

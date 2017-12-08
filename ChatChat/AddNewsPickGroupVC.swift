@@ -12,26 +12,32 @@ import Firebase
 class AddNewsPickGroupVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     
+    var currentTeamForAPP: Team?
     
     var user: User?
-    var userGroupKeys: [String]?
-    var userGroupNames: [String]?
+    var GroupKeysOfCurrentUser: [String]?
+    var GroupNamesOfCurrentUser: [String]?
+    
+    var groupKeysOfCurrentTeam: [String]?
+    var groupNamesOfCurrentTeam: [String]?
     var curRowSelection: Int?
     
     
     @IBOutlet weak var pickerView: UIPickerView!
     
+    @IBOutlet weak var makeEventWarningLabel: UILabel!
     
     // MARK: View life cycles --------------------------------------------------
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        for val in userGroupNames! {
-            print("printing")
-            print(val)
+        makeEventWarningLabel.alpha = 0.0
+        if groupNamesOfCurrentTeam == nil || groupNamesOfCurrentTeam!.count == 0 {
+            makeEventWarningLabel.alpha = 1.0
+            makeEventWarningLabel.text = "No groups to add an event to!"
         }
-        // Do any additional setup after loading the view.
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -42,9 +48,20 @@ class AddNewsPickGroupVC: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     
     
     @IBAction func AddEventButton(_ sender: Any) {
-        performSegue(withIdentifier: "addEventSegue", sender: nil)
+        if groupNamesOfCurrentTeam != nil && groupNamesOfCurrentTeam!.count != 0 {
+            performSegue(withIdentifier: "addEventSegue", sender: nil)
+        }
+        else {
+            makeEventWarningLabel.alpha = 1.0
+            makeEventWarningLabel.text = "To add an event, create a group in chat Section!"
+        }
     }
     
+    @IBAction func AddAnnounceButton(_ sender: Any) {
+        
+        makeEventWarningLabel.alpha = 1.0
+        makeEventWarningLabel.text = "Announcements are not available in this version of the app."
+    }
     
     // MARK: UI Picker Datasource -----------------------------------------
     
@@ -53,17 +70,17 @@ class AddNewsPickGroupVC: UIViewController, UIPickerViewDelegate, UIPickerViewDa
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if userGroupKeys?.count != userGroupNames?.count {
-            print("HUGEEE Warning!!: size of userGroupKeys and userGroupNames are not the same!!")
+        if GroupKeysOfCurrentUser?.count != GroupNamesOfCurrentUser?.count {
+            print("HUGEEE Warning!!: size of GroupKeysOfCurrentUser and GroupNamesOfCurrentUser are not the same!!")
         }
-        return userGroupNames!.count
+        return groupNamesOfCurrentTeam!.count
     }
     
     
     // MARK: - UIPickerViewDelegate Methods
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         curRowSelection = row
-        return self.userGroupNames?[row]
+        return self.groupNamesOfCurrentTeam?[row]
     }
     
     
@@ -76,13 +93,13 @@ class AddNewsPickGroupVC: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         
         if segue.identifier == "addEventSegue" {
             let addVC = segue.destination as! AddEventVC
-            let selectChannelName = userGroupNames![curRowSelection!]
-            let selectChannelKey = userGroupKeys![curRowSelection!]
+            let selectedChannelName = groupNamesOfCurrentTeam![curRowSelection!]
+            let selectedChannelKey = groupKeysOfCurrentTeam![curRowSelection!]
             
             addVC.user = self.user
-            addVC.ChannelGroupName = selectChannelName
-            addVC.ChannelGroupKey = selectChannelKey
-            
+            addVC.ChannelGroupName = selectedChannelName
+            addVC.ChannelGroupKey = selectedChannelKey
+            addVC.currentTeamForAPP = self.currentTeamForAPP
         }
     }
  

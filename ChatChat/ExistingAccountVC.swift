@@ -11,9 +11,13 @@ import Firebase
 
 class ExistingAccountVC: UIViewController {
 
+    
+    private lazy var DBusersRef: DatabaseReference = Database.database().reference().child("Users")
+    private var DBusersRefHandle: DatabaseHandle?
+    
+    @IBOutlet weak var noAccountLabel: UILabel!
     @IBOutlet weak var existingUsername: UITextField!
     @IBOutlet weak var existingEmail: UITextField!
-    
     var user: User?
     
     override func viewDidLoad() {
@@ -31,7 +35,34 @@ class ExistingAccountVC: UIViewController {
         
         if existingUsername.text != "",
             existingEmail.text != "" {
-            performSegue(withIdentifier: "RetrieveAccount", sender: nil)
+            
+            DBusersRef.observeSingleEvent(of: .value, with: { snapshot in
+                for child in snapshot.children.allObjects as! [DataSnapshot] {
+                    let userKey = child.key
+                    let firebaseUserDict = child.value as! [String: String]
+                    let userName = firebaseUserDict["username"]
+                    let email = firebaseUserDict["email"]
+                    
+                    
+                    if let curUserId = Auth.auth().currentUser?.uid {
+                        
+                        if curUserId == userKey && userName == self.existingUsername.text && email == self.existingEmail.text {
+                                self.performSegue(withIdentifier: "RetrieveAccount", sender: nil)
+                        }
+                        else {
+                            self.noAccountLabel.text = "Incorrect username or email."
+                            self.noAccountLabel.alpha = 1.0
+                        }
+                        
+                        
+                    }
+                    
+                }
+            })
+        }
+        else {
+            self.noAccountLabel.text = "Fill in the text fields."
+            self.noAccountLabel.alpha = 1.0
         }
         
     }
@@ -44,30 +75,11 @@ class ExistingAccountVC: UIViewController {
         
         if segue.identifier == "RetrieveAccount" {
             
-            let navVc = segue.destination as! UINavigationController // 1
-            let HomeScreenVC = navVc.viewControllers.first as! HomeScreenVC
-            HomeScreenVC.fromExistingAccountVC = true
-            
-            // usersRef.queryOrdered(byChild: "username").queryEqual(toValue: "snu").observe(.value, with: { snapshot in
-            /*
-            var existingUser: User?
-            
-            if let currentUserId = Auth.auth().currentUser {
-                let usersRef: DatabaseReference = Database.database().reference().child("Users").child(currentUserId.uid)
-                
-                usersRef.observeSingleEvent(of: .value, with: { (snapshot) in
-                    existingUser = User(snap: snapshot)
-                    self.user = existingUser
-                    
-                })
-            }
             
             
-            let navVc = segue.destination as! UINavigationController // 1
-            let HomeScreenVC = navVc.viewControllers.first as! HomeScreenVC
-            HomeScreenVC.username = self.user?.username
-            HomeScreenVC.user = self.user
-                */
+            
+            //let slideOutPrepVC = segue.destination as! slideOutPrepPageVC
+            
         }
     }
     

@@ -30,8 +30,6 @@ class User {
     
     init(snap: DataSnapshot) {
         let userDict = snap.value as! [String: AnyObject]
-        print("in constructor")
-        
         
         self.userId = userDict["userId"] as! String
         self.username = userDict["username"] as! String
@@ -40,7 +38,7 @@ class User {
         self.sport = userDict["sport"] as! String
         self.position = userDict["position"] as! String
         self.email = userDict["email"] as! String
-        self.photoURL = URL(fileURLWithPath: userDict["photoURL"] as! String)
+        self.photoURL = URL(string: userDict["photoURL"] as! String)
         
         groupKeys = [String]()
         directChatKeys = [String]()

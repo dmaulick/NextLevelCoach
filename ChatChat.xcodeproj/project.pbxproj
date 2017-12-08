@@ -19,11 +19,19 @@
 		BB5355811BEF765800321277 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB5355801BEF765800321277 /* Assets.xcassets */; };
 		BB5355841BEF765800321277 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB5355821BEF765800321277 /* LaunchScreen.storyboard */; };
 		BB53558F1BEF7E9700321277 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB53558E1BEF7E9700321277 /* ChatViewController.swift */; };
+		DC0BB8441FCDE5280036C6FA /* FindTeamVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0BB8431FCDE5280036C6FA /* FindTeamVC.swift */; };
+		DC0BB8461FCDE5420036C6FA /* CreateTeamVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0BB8451FCDE5420036C6FA /* CreateTeamVC.swift */; };
+		DC0BB8481FCDE55F0036C6FA /* EditTeamVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0BB8471FCDE55F0036C6FA /* EditTeamVC.swift */; };
+		DC0BB84A1FCE092F0036C6FA /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0BB8491FCE092F0036C6FA /* Team.swift */; };
+		DC0BB8511FCE36890036C6FA /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0BB84F1FCE36890036C6FA /* SWRevealViewController.m */; };
 		DC2981171FBE0E5B00DC5B4B /* ExistingAccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2981161FBE0E5B00DC5B4B /* ExistingAccountVC.swift */; };
+		DC2BA4311FCB70B80030AA3D /* EventViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2BA4301FCB70B80030AA3D /* EventViewVC.swift */; };
 		DC3607FA1FBBC0B600ECBFAC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3607F91FBBC0B600ECBFAC /* User.swift */; };
 		DC3607FC1FBBC5F500ECBFAC /* CreateUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3607FB1FBBC5F500ECBFAC /* CreateUserVC.swift */; };
 		DC3607FE1FBC077D00ECBFAC /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3607FD1FBC077D00ECBFAC /* ProfileVC.swift */; };
-		DC3608001FBC0B2800ECBFAC /* NewGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3607FF1FBC0B2800ECBFAC /* NewGroupVC.swift */; };
+		DC3608001FBC0B2800ECBFAC /* ManageTeamsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3607FF1FBC0B2800ECBFAC /* ManageTeamsVC.swift */; };
+		DC6816F51FD23E3C00C262B3 /* AddGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6816F41FD23E3C00C262B3 /* AddGroupVC.swift */; };
+		DC7937461FC5124200EFE450 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7937451FC5124200EFE450 /* CalendarTableViewCell.swift */; };
 		DC7EADAD1FC28D10008D579F /* CalendarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7EADAC1FC28D0F008D579F /* CalendarVC.swift */; };
 		DC93DCCD1FBAA13700F0CD3A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC93DCCC1FBAA13700F0CD3A /* Event.swift */; };
 		DC93DCCF1FBAB68800F0CD3A /* EventTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC93DCCE1FBAB68800F0CD3A /* EventTableCell.swift */; };
@@ -31,6 +39,9 @@
 		DC93DCD31FBAB6E700F0CD3A /* AddEventVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC93DCD21FBAB6E700F0CD3A /* AddEventVC.swift */; };
 		DC93DCD71FBAB75700F0CD3A /* EditEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC93DCD61FBAB75700F0CD3A /* EditEvent.swift */; };
 		DC9FA8641FC2529200DA125A /* AddNewsPickGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9FA8631FC2529200DA125A /* AddNewsPickGroupVC.swift */; };
+		DCAB3FAF1FCF2BBC00B2BE59 /* BackTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB3FAE1FCF2BBC00B2BE59 /* BackTableVC.swift */; };
+		DCAB3FB11FCF505500B2BE59 /* BackTableTeamCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB3FB01FCF505500B2BE59 /* BackTableTeamCell.swift */; };
+		DCC40C001FCE9190002A0573 /* slideOutPrepPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC40BFF1FCE9190002A0573 /* slideOutPrepPageVC.swift */; };
 		DCFA506E1FB51A03009A5259 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCFA506D1FB51A03009A5259 /* GoogleService-Info.plist */; };
 		DCFA50721FB51F1C009A5259 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFA50701FB51F1C009A5259 /* CustomCell.swift */; };
 		DCFA50761FB52388009A5259 /* HomeScreenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFA50751FB52388009A5259 /* HomeScreenVC.swift */; };
@@ -54,11 +65,20 @@
 		BB5355831BEF765800321277 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BB5355851BEF765800321277 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB53558E1BEF7E9700321277 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		DC0BB8431FCDE5280036C6FA /* FindTeamVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindTeamVC.swift; sourceTree = "<group>"; };
+		DC0BB8451FCDE5420036C6FA /* CreateTeamVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTeamVC.swift; sourceTree = "<group>"; };
+		DC0BB8471FCDE55F0036C6FA /* EditTeamVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTeamVC.swift; sourceTree = "<group>"; };
+		DC0BB8491FCE092F0036C6FA /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
+		DC0BB84F1FCE36890036C6FA /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
+		DC0BB8501FCE36890036C6FA /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		DC2981161FBE0E5B00DC5B4B /* ExistingAccountVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingAccountVC.swift; sourceTree = "<group>"; };
+		DC2BA4301FCB70B80030AA3D /* EventViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewVC.swift; sourceTree = "<group>"; };
 		DC3607F91FBBC0B600ECBFAC /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DC3607FB1FBBC5F500ECBFAC /* CreateUserVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserVC.swift; sourceTree = "<group>"; };
 		DC3607FD1FBC077D00ECBFAC /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
-		DC3607FF1FBC0B2800ECBFAC /* NewGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupVC.swift; sourceTree = "<group>"; };
+		DC3607FF1FBC0B2800ECBFAC /* ManageTeamsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageTeamsVC.swift; sourceTree = "<group>"; };
+		DC6816F41FD23E3C00C262B3 /* AddGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGroupVC.swift; sourceTree = "<group>"; };
+		DC7937451FC5124200EFE450 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableViewCell.swift; sourceTree = "<group>"; };
 		DC7EADAC1FC28D0F008D579F /* CalendarVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarVC.swift; sourceTree = "<group>"; };
 		DC93DCCC1FBAA13700F0CD3A /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		DC93DCCE1FBAB68800F0CD3A /* EventTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableCell.swift; sourceTree = "<group>"; };
@@ -66,6 +86,9 @@
 		DC93DCD21FBAB6E700F0CD3A /* AddEventVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddEventVC.swift; sourceTree = "<group>"; };
 		DC93DCD61FBAB75700F0CD3A /* EditEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditEvent.swift; sourceTree = "<group>"; };
 		DC9FA8631FC2529200DA125A /* AddNewsPickGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewsPickGroupVC.swift; sourceTree = "<group>"; };
+		DCAB3FAE1FCF2BBC00B2BE59 /* BackTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackTableVC.swift; sourceTree = "<group>"; };
+		DCAB3FB01FCF505500B2BE59 /* BackTableTeamCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackTableTeamCell.swift; sourceTree = "<group>"; };
+		DCC40BFF1FCE9190002A0573 /* slideOutPrepPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = slideOutPrepPageVC.swift; sourceTree = "<group>"; };
 		DCFA506D1FB51A03009A5259 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DCFA50701FB51F1C009A5259 /* CustomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		DCFA50751FB52388009A5259 /* HomeScreenVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HomeScreenVC.swift; path = ../HomeScreenVC.swift; sourceTree = "<group>"; };
@@ -101,6 +124,8 @@
 				45A0D9001D4BB5E900F26729 /* Channel.swift */,
 				DC93DCCC1FBAA13700F0CD3A /* Event.swift */,
 				DC3607F91FBBC0B600ECBFAC /* User.swift */,
+				DC0BB8491FCE092F0036C6FA /* Team.swift */,
+				DCAB3FB01FCF505500B2BE59 /* BackTableTeamCell.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -154,12 +179,19 @@
 				BB53557B1BEF765800321277 /* LoginViewController.swift */,
 				DC3607FB1FBBC5F500ECBFAC /* CreateUserVC.swift */,
 				DC2981161FBE0E5B00DC5B4B /* ExistingAccountVC.swift */,
+				DCC40BFF1FCE9190002A0573 /* slideOutPrepPageVC.swift */,
+				DCAB3FAE1FCF2BBC00B2BE59 /* BackTableVC.swift */,
 				DCFA50751FB52388009A5259 /* HomeScreenVC.swift */,
 				DC3607FD1FBC077D00ECBFAC /* ProfileVC.swift */,
-				DC3607FF1FBC0B2800ECBFAC /* NewGroupVC.swift */,
+				DC3607FF1FBC0B2800ECBFAC /* ManageTeamsVC.swift */,
+				DC0BB8451FCDE5420036C6FA /* CreateTeamVC.swift */,
+				DC0BB8431FCDE5280036C6FA /* FindTeamVC.swift */,
+				DC0BB8471FCDE55F0036C6FA /* EditTeamVC.swift */,
 				45A0D8F91D49419500F26729 /* ChannelListViewController.swift */,
+				DC6816F41FD23E3C00C262B3 /* AddGroupVC.swift */,
 				BB53558E1BEF7E9700321277 /* ChatViewController.swift */,
 				DC7EADAC1FC28D0F008D579F /* CalendarVC.swift */,
+				DC2BA4301FCB70B80030AA3D /* EventViewVC.swift */,
 				DC93DCD01FBAB6B000F0CD3A /* NewsFeedTableView.swift */,
 				DC9FA8631FC2529200DA125A /* AddNewsPickGroupVC.swift */,
 				DC93DCD21FBAB6E700F0CD3A /* AddEventVC.swift */,
@@ -171,6 +203,8 @@
 		BB5355911BEF817A00321277 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				DC0BB8501FCE36890036C6FA /* SWRevealViewController.h */,
+				DC0BB84F1FCE36890036C6FA /* SWRevealViewController.m */,
 				BB1E97061C147BAA00E34853 /* ChatChat-Bridging-Header.h */,
 				BB5355791BEF765800321277 /* AppDelegate.swift */,
 				459780D21D6465FB007BE66F /* UIImage+Gif.swift */,
@@ -195,6 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				DCFA50701FB51F1C009A5259 /* CustomCell.swift */,
+				DC7937451FC5124200EFE450 /* CalendarTableViewCell.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -357,23 +392,34 @@
 				BB53557C1BEF765800321277 /* LoginViewController.swift in Sources */,
 				DC9FA8641FC2529200DA125A /* AddNewsPickGroupVC.swift in Sources */,
 				DC93DCCD1FBAA13700F0CD3A /* Event.swift in Sources */,
+				DC0BB8441FCDE5280036C6FA /* FindTeamVC.swift in Sources */,
+				DC0BB8481FCDE55F0036C6FA /* EditTeamVC.swift in Sources */,
+				DCAB3FB11FCF505500B2BE59 /* BackTableTeamCell.swift in Sources */,
 				45A0D9011D4BB5E900F26729 /* Channel.swift in Sources */,
+				DC0BB8511FCE36890036C6FA /* SWRevealViewController.m in Sources */,
 				DC3607FE1FBC077D00ECBFAC /* ProfileVC.swift in Sources */,
+				DC2BA4311FCB70B80030AA3D /* EventViewVC.swift in Sources */,
 				DC3607FA1FBBC0B600ECBFAC /* User.swift in Sources */,
 				459780D31D6465FB007BE66F /* UIImage+Gif.swift in Sources */,
+				DCC40C001FCE9190002A0573 /* slideOutPrepPageVC.swift in Sources */,
 				DCFA50761FB52388009A5259 /* HomeScreenVC.swift in Sources */,
 				DC3607FC1FBBC5F500ECBFAC /* CreateUserVC.swift in Sources */,
 				BB53558F1BEF7E9700321277 /* ChatViewController.swift in Sources */,
+				DC0BB8461FCDE5420036C6FA /* CreateTeamVC.swift in Sources */,
 				45A0D8FA1D49419500F26729 /* ChannelListViewController.swift in Sources */,
 				DC93DCCF1FBAB68800F0CD3A /* EventTableCell.swift in Sources */,
 				BB53557A1BEF765800321277 /* AppDelegate.swift in Sources */,
+				DC0BB84A1FCE092F0036C6FA /* Team.swift in Sources */,
 				DC93DCD71FBAB75700F0CD3A /* EditEvent.swift in Sources */,
 				DC2981171FBE0E5B00DC5B4B /* ExistingAccountVC.swift in Sources */,
 				DCFA50721FB51F1C009A5259 /* CustomCell.swift in Sources */,
 				45A0D8FE1D49508800F26729 /* CreateChannelCell.swift in Sources */,
+				DC6816F51FD23E3C00C262B3 /* AddGroupVC.swift in Sources */,
 				DC7EADAD1FC28D10008D579F /* CalendarVC.swift in Sources */,
+				DCAB3FAF1FCF2BBC00B2BE59 /* BackTableVC.swift in Sources */,
+				DC7937461FC5124200EFE450 /* CalendarTableViewCell.swift in Sources */,
 				DC93DCD11FBAB6B000F0CD3A /* NewsFeedTableView.swift in Sources */,
-				DC3608001FBC0B2800ECBFAC /* NewGroupVC.swift in Sources */,
+				DC3608001FBC0B2800ECBFAC /* ManageTeamsVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

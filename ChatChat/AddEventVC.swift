@@ -11,14 +11,30 @@ import Firebase
 
 class AddEventVC: UIViewController, UITextFieldDelegate {
     
+    var currentTeamForAPP: Team?
+    
     var user: User?
     var ChannelGroupName: String?
     var ChannelGroupKey: String?
+    var dateFormatter = DateFormatter()
+    
+    @IBOutlet weak var titleLabel: UILabel!
     
     @IBOutlet weak var newTitleTextField: UITextField!
     @IBOutlet weak var newDescriptionTextField: UITextField!
     @IBOutlet weak var newWhatToWearField: UITextField!
+
+    @IBOutlet weak var datePicker: UIDatePicker!
     
+    @IBAction func titleClicked(_ sender: Any) {
+        newTitleTextField.text = ""
+    }
+    @IBAction func descriptionClicked(_ sender: Any) {
+        newDescriptionTextField.text = ""
+    }
+    @IBAction func whatToWearClicked(_ sender: Any) {
+        newWhatToWearField.text = ""
+    }
     
     private lazy var EventRef: DatabaseReference = Database.database().reference().child("Events")
     private lazy var GroupEventKeysRef: DatabaseReference = Database.database().reference().child("GroupEventKeys")
@@ -26,16 +42,16 @@ class AddEventVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .medium
         
-        newTitleTextField.text = ChannelGroupKey
-        newDescriptionTextField.text = ChannelGroupName
-        newWhatToWearField.text = ""
+        titleLabel.text = "Create an event to be added to \(String(describing: ChannelGroupName!))"
+        newTitleTextField.text = "Event Title"
+        newDescriptionTextField.text = "Event Description"
+        newWhatToWearField.text = "What to Wear"
         
         
         
-        
-        //profilePic.layer.borderWidth = 3.0
-        //profilePic.layer.borderColor = CGColor.black
         
     }
     
@@ -58,13 +74,15 @@ class AddEventVC: UIViewController, UITextFieldDelegate {
                 let title = newTitleTextField?.text
                 let description = newDescriptionTextField?.text
                 let whatToWear = newWhatToWearField?.text
+                let date = datePicker.date
                 
                 let EventItem = [
                     "title"         : title,
                     "description"   : description,
                     "whatToWear"    : whatToWear,
                     "ChannelName"   : self.ChannelGroupName,
-                    "ChannelKey"    : self.ChannelGroupKey
+                    "ChannelKey"    : self.ChannelGroupKey,
+                    "Date"          : dateFormatter.string(from: date)
                 ]
                 let newEventRef = EventRef.childByAutoId()
                 newEventRef.setValue(EventItem)

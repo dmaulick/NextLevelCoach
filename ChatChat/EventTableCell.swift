@@ -13,8 +13,8 @@ class EventTableCell: UITableViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var descriptLabel: UILabel!
-    @IBOutlet weak var startTimeLabel: UILabel!
-    @IBOutlet weak var endTimeLabel: UILabel!
+    @IBOutlet weak var Time: UILabel!
+    @IBOutlet weak var Group: UILabel!
     
     /*
      override func awakeFromNib() {

@@ -7,7 +7,8 @@ import UIKit
 import Firebase
 import GoogleSignIn
 
-class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate  {
+
+class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate {
     
     @IBOutlet weak var nameField: UITextField!
     @IBOutlet weak var bottomLayoutGuideConstraint: NSLayoutConstraint!
@@ -16,6 +17,16 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDeleg
     // MARK: View Lifecycle ----------------------------------View Lifecycle-----------------------------------------------View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let firebaseAuth = Auth.auth()
+        do {
+            try firebaseAuth.signOut()
+            GIDSignIn.sharedInstance().signOut()
+        } catch let signOutError as NSError {
+            print ("Error signing out: %@", signOutError)
+            return
+        }
+        print("Successfully Logged last user out")
         
         let googleSignInButton = GIDSignInButton()
         googleSignInButton.frame = CGRect(x: 16, y: 300, width: view.frame.width - 32, height: 50)
@@ -60,20 +71,6 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDeleg
         }
         print("Successfully logged into Next Level Coach")
         performSegue(withIdentifier: "LoginToChat", sender: nil)
-    }
-  
-    // Log in anonymously -------------------------------------Log in anonymously------------------------------------------Log in anonymously
-    
-    @IBAction func loginDidTouch(_ sender: AnyObject) {
-        if nameField?.text != "" { // 1
-            Auth.auth().signInAnonymously(completion: { (user, error) in // 2
-            if let err = error { // 3
-                print(err.localizedDescription)
-                return
-            }
-                self.performSegue(withIdentifier: "LoginToChat", sender: nil) // 4
-            })
-        }
     }
   
     // MARK: - Notifications -----------------------------------Notifications-----------------------------------------------Notifications
