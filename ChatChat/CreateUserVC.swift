@@ -43,6 +43,10 @@ class CreateUserVC: UIViewController {
     // MARK: - Navigation-------------------------Navigation
     // Mark: Make new user-----------------------------------------Make new user-----------------------------------------Make new user
 
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
     
     @IBAction func CreateUser(_ sender: Any) {
         

@@ -21,6 +21,9 @@ class CreateTeamVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
     
     @IBOutlet weak var imageToggleOutlet: UIButton!
     @IBAction func ImageToggle(_ sender: Any) {
+        imageToggleOutlet.alpha = 1.0
+        imagePicked.alpha = 0.0
+        
         if imageEnumNum == imageNum.arsenal.rawValue {
             imageToggleOutlet.setImage(#imageLiteral(resourceName: "cal-poly"), for: .normal)
             imageEnumNum = imageNum.calPoly.rawValue
@@ -56,6 +59,9 @@ class CreateTeamVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
     @IBOutlet weak var newTeamPWTextField: UITextField!
     
     
+    @IBOutlet weak var imagePicked: UIImageView!
+    
+    
     @IBAction func openCameraButton(_ sender: Any) {
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             let imagePicker = UIImagePickerController()
@@ -77,9 +83,12 @@ class CreateTeamVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
     }
  
     private func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        imageToggleOutlet.setImage(image, for: .normal)
+        
+        imageToggleOutlet.alpha = 0.0
+        imagePicked.image = image
+        imagePicked.alpha = 1.0
+        
         dismiss(animated:true, completion: nil)
     }
     
@@ -101,7 +110,8 @@ class CreateTeamVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         super.viewDidLoad()
         
         imageToggleOutlet.setImage(#imageLiteral(resourceName: "arsenal"), for: .normal)
-        
+        imageToggleOutlet.alpha = 1.0
+        imagePicked.alpha = 0.0
         
         // Do any additional setup after loading the view.
     }
@@ -110,9 +120,6 @@ class CreateTeamVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
-    
     
     
     
